@@ -19,7 +19,7 @@ class BinaryTreeNode {
     return 1 + Math.min(
       this.left.minDepthToIncompleteNode(),
       this.right.minDepthToIncompleteNode()
-    )
+    );
   }
 
   /** maxDepth(): return the maximum depth from the invoking node -- that is,
@@ -46,6 +46,72 @@ class BinaryTreeNode {
     // const rightDepth = this.right ? this.right.minDepth() : Infinity;
 
     return 1 + Math.min(this.left.minDepth(), this.right.minDepth());
+  }
+
+  /** nextLarger(lowerBound): return the smallest value from the invoking node
+   * which is larger than lowerBound. Return null if no such value exists. */
+  // Recursively:
+  // nextLarger(lowerBound) {
+  //   // base case
+  //   if (!this.left && !this.right) {
+  //     return (this.val > lowerBound) ? this.val : null;
+  //   }
+
+  //   let candidates = [];
+
+  //   if (this.val > lowerBound) candidates.push(this.val);
+
+  //   if (this.right) {
+  //     const rightNextLarger = this.right.nextLarger(lowerBound);
+  //     if (rightNextLarger !== null) candidates.push(rightNextLarger);
+  //   }
+
+  //   if (this.left) {
+  //     const leftNextLarger = this.left.nextLarger(lowerBound);
+  //     if (leftNextLarger !== null) candidates.push(leftNextLarger);
+  //   }
+
+  //   if (candidates.length === 0) return null;
+
+  //   return Math.min(...candidates);
+  // }
+
+  // Iteratively (DFS):
+  // nextLarger(lowerBound) {
+  //   let toVisitStack = [this];
+  //   let nextLarger = Infinity;
+
+  //   while (toVisitStack.length) {
+  //     const current = toVisitStack.pop();
+
+  //     if (current.val > lowerBound) {
+  //       nextLarger = Math.min(current.val, nextLarger);
+  //     }
+
+  //     if (current.left) toVisitStack.push(current.left);
+  //     if (current.right) toVisitStack.push(current.right);
+  //   }
+
+  //   return (nextLarger !== Infinity) ? nextLarger : null;
+  // }
+
+  // Iteratively (BFS):
+  nextLarger(lowerBound) {
+    let toVisitQueue = [this];
+    let nextLarger = Infinity;
+
+    while (toVisitQueue.length) {
+      const current = toVisitQueue.shift();
+
+      if (current.val > lowerBound) {
+        nextLarger = Math.min(current.val, nextLarger);
+      }
+
+      if (current.left) toVisitQueue.push(current.left);
+      if (current.right) toVisitQueue.push(current.right);
+    }
+
+    return (nextLarger !== Infinity) ? nextLarger : null;
   }
 }
 
@@ -92,7 +158,9 @@ class BinaryTree {
    * which is larger than lowerBound. Return null if no such value exists. */
 
   nextLarger(lowerBound) {
+    if (!this.root) return null;
 
+    return this.root.nextLarger(lowerBound);
   }
 
   /** Further study!
